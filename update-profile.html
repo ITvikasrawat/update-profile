@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Self-Service | PBL Connect</title>
+    
+    <!-- ✅ CHANGE 1: Path hata diya, ab same folder se uthayega -->
+    <link rel="icon" href="pbl-logo.png" type="image/png"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-hover: #5b4cc4;
+            --bg-color: #f4f6f9;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --error: #d63031;
+            --success: #00b894;
+            --input-border: #dfe6e9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#d1d8e0 1px, transparent 1px);
+            background-size: 24px 24px;
+            height: 100vh; /* Fixed height */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* No Scroll */
+        }
+
+        /* --- Header (Slimmer) --- */
+        .app-header {
+            padding: 0 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            height: 60px; /* Reduced height */
+            flex-shrink: 0;
+        }
+        .header-brand { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--primary); font-size: 1.1em; }
+        .header-brand img { height: 35px; }
+
+        /* --- Main Content --- */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .profile-card {
+            background: #fff;
+            width: 100%;
+            max-width: 550px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            padding: 30px 45px;
+            position: relative;
+            border: 1px solid #fff;
+        }
+
+        .card-heading { text-align: center; margin-bottom: 25px; }
+        .card-heading h2 { font-size: 1.8em; color: var(--text-dark); margin-bottom: 5px; letter-spacing: -0.5px; }
+        .card-heading p { font-size: 0.9em; color: var(--text-light); }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 18px; position: relative; }
+        
+        label {
+            display: block;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .label-optional { font-size: 0.7em; color: #b2bec3; text-transform: none; float: right; font-weight: 400; margin-top: 2px; }
+
+        .input-group { position: relative; }
+        
+        /* Left Icon */
+        .input-group i.icon-left {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--text-light); font-size: 1.1em; pointer-events: none; z-index: 5;
+        }
+
+        /* Right Icon (Validation Check) */
+        .input-group i.icon-check {
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--success); font-size: 1.2em; display: none; /* Hidden by default */
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px 12px 45px; /* Compact padding */
+            font-size: 1em;
+            color: var(--text-dark);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            background: #fff;
+        }
+        .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); }
+        .form-control::placeholder { color: #b2bec3; }
+        
+        /* Dynamic Styles */
+        .form-control.error { border-color: var(--error); background: #fffbfb; }
+        
+        .form-control.success { 
+            border-color: var(--success); 
+            background: #f0fffa; 
+            color: var(--success);
+            font-weight: 500;
+        }
+        /* Show check icon when success class is present */
+        .form-control.success ~ i.icon-check { display: block; }
+
+        /* Error Tooltip */
+        .error-msg {
+            font-size: 0.75em; color: var(--error); margin-top: 4px; display: none; font-weight: 500;
+        }
+
+        input[name="Phone"] { padding-left: 80px; }
+        .phone-prefix { position: absolute; left: 45px; top: 50%; transform: translateY(-50%); font-size: 1em; font-weight: 600; color: var(--text-dark); z-index: 2; }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), #a29bfe);
+            color: #fff; border: none; border-radius: 12px; font-size: 1.1em; font-weight: 600;
+            cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 8px 20px rgba(108, 92, 231, 0.25);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(108, 92, 231, 0.35); }
+        .btn-submit:disabled { background: #b2bec3; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* Dropdown */
+        .dropdown-results {
+            position: absolute; top: 105%; left: 0; width: 100%;
+            background: #fff; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            z-index: 100; max-height: 220px; overflow-y: auto; border: 1px solid #eee; display: none;
+        }
+        .dropdown-results.show { display: block; }
+        .result-item { padding: 12px 18px; cursor: pointer; font-size: 0.9em; border-bottom: 1px solid #f9f9f9; color: var(--text-dark); }
+        .result-item:hover, .result-item.focused { background: #f0f3ff; color: var(--primary); padding-left: 24px; transition: 0.1s; font-weight: 500; }
+        .result-item.disabled { color: #ccc; pointer-events: none; }
+
+        /* Footer */
+        .app-footer {
+            text-align: center; padding: 12px; font-size: 0.75em; color: var(--text-light);
+            background: #fff; border-top: 1px solid #e0e0e0; flex-shrink: 0;
+            white-space: nowrap; /* Forces single line */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .footer-link { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+        /* Loader & Success */
+        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+        .spinner { width: 45px; height: 45px; border: 4px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .success-overlay { position: absolute; inset: 0; background: #fff; border-radius: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 50; text-align: center; }
+
+        /* Responsive Fix for Short Screens */
+        @media (max-height: 800px) {
+            .profile-card { padding: 25px 35px; }
+            .form-group { margin-bottom: 14px; }
+            .form-control { padding: 10px 16px 10px 45px; }
+            .card-heading { margin-bottom: 15px; }
+            .card-heading h2 { font-size: 1.5em; }
+            .app-footer { font-size: 0.7em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pageLoader" class="loader-overlay"><div class="spinner"></div></div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-brand">
+            <!-- ✅ CHANGE 2: Path hata diya, same folder -->
+            <img src="pbl-logo.png" alt="PBL Logo">
+            <span>Employee Self-Service</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="profile-card">
+            
+            <div class="card-heading">
+                <h2>Update Profile</h2>
+                <p>Keep your records accurate & up-to-date.</p>
+            </div>
+
+            <form id="profileForm" autocomplete="off">
+                
+                <!-- Name Search -->
+                <div class="form-group">
+                    <label>Select Name <span style="color:var(--error)">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-search icon-left"></i>
+                        <input type="text" id="searchBox" class="form-control" placeholder="Type to search..." autocomplete="off">
+                        <div id="dropdown" class="dropdown-results"></div>
+                    </div>
+                </div>
+
+                <!-- DOB -->
+                <div class="form-group">
+                    <label>Date of Birth <span style="color:var(--error)">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-birthday-cake icon-left"></i>
+                        <input type="text" id="dob" name="DOB" class="form-control date-mask" placeholder="DD-MM-YYYY" maxlength="10">
+                    </div>
+                    <div id="dobError" class="error-msg"></div>
+                </div>
+
+                <!-- Anniversary -->
+                <div class="form-group">
+                    <label>Anniversary <span class="label-optional">(Optional)</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-heart icon-left" style="color: #ff7675;"></i>
+                        <input type="text" id="anniversary" name="Anniversary" class="form-control date-mask" placeholder="DD-MM-YYYY" maxlength="10">
+                    </div>
+                    <div id="annivError" class="error-msg"></div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label>Personal Email <span style="color:var(--error)">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope icon-left"></i>
+                        <input type="email" id="email" name="Email" class="form-control" placeholder="example@gmail.com">
+                    </div>
+                    <div id="emailError" class="error-msg">Must be a valid @gmail.com address</div>
+                </div>
+
+                <!-- Phone -->
+                <div class="form-group">
+                    <label>WhatsApp Number <span style="color:var(--error)">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-phone-alt icon-left"></i>
+                        <span class="phone-prefix">+91</span>
+                        <input type="tel" id="phone" name="Phone" class="form-control" placeholder="98765 43210" maxlength="10">
+                        <!-- Green Check Icon -->
+                        <i class="fas fa-check-circle icon-check"></i>
+                    </div>
+                    <div id="phoneError" class="error-msg">Must be exactly 10 digits</div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-submit">
+                    Update Profile <i class="fas fa-arrow-right"></i>
+                </button>
+
+            </form>
+
+            <!-- Success Screen -->
+            <div id="successOverlay" class="success-overlay">
+                <i class="fas fa-check-circle" style="font-size: 4em; color: var(--success); margin-bottom: 20px;"></i>
+                <h2 style="margin-bottom: 10px; color: var(--text-dark);">Success!</h2>
+                <p style="color: var(--text-light); margin-bottom: 25px;">Your profile has been updated.</p>
+                <button onclick="location.reload()" class="btn-submit" style="width: auto; padding: 12px 35px; margin: 0;">Close</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Compact Footer (Single Line) -->
+    <footer class="app-footer">
+        © <span id="yearSpan"></span> Pan Business Lists Pvt. Ltd. &nbsp;|&nbsp; Private Portal &nbsp;|&nbsp; Developed by <span class="footer-link">IT Department</span>
+    </footer>
+
+    <script>
+        // 🔴 UPDATE YOUR SCRIPT URL HERE 🔴
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysa6WDYVIg3y1iR0u_fc3wz4xRcnnbDsF3osYdPiQb0Ym4N77Lf3HY-xokaPlfbocWOQ/exec"; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('yearSpan').textContent = new Date().getFullYear();
+            
+            const searchBox = document.getElementById('searchBox');
+            const dropdown = document.getElementById('dropdown');
+            const submitBtn = document.getElementById('submitBtn');
+            const loader = document.getElementById('pageLoader');
+            
+            let employeeList = [];
+            let selectedExactName = "";
+            let currentFocus = -1; 
+
+            // --- 1. Smart Date Logic (Flatpickr) ---
+            const dateInputs = document.querySelectorAll('.date-mask');
+            
+            dateInputs.forEach(input => {
+                flatpickr(input, {
+                    dateFormat: "d-m-Y",
+                    allowInput: true,
+                    disableMobile: "true",
+                    theme: "material_blue"
+                });
+
+                input.addEventListener('input', (e) => {
+                    let v = e.target.value.replace(/\D/g, '');
+                    if (v.length > 2) v = v.slice(0, 2) + '-' + v.slice(2);
+                    if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
+                    e.target.value = v.slice(0, 10);
+                });
+
+                input.addEventListener('blur', () => validateDate(input));
+            });
+
+            function validateDate(input) {
+                const val = input.value;
+                const errorId = input.id === 'dob' ? 'dobError' : 'annivError';
+                const errEl = document.getElementById(errorId);
+                
+                if (val.length === 10) {
+                    const [d, m, y] = val.split('-').map(Number);
+                    const currentYear = new Date().getFullYear();
+                    const dateObj = new Date(y, m - 1, d);
+
+                    if (dateObj.getFullYear() !== y || dateObj.getMonth() + 1 !== m || dateObj.getDate() !== d) {
+                        showError(input, errEl, "Invalid Date");
+                        return false;
+                    }
+
+                    if (input.id === 'dob') {
+                        if (y < 1950 || y > (currentYear - 18)) {
+                            showError(input, errEl, `Invalid Year (18+ years)`);
+                            return false;
+                        }
+                    } 
+                    else if (input.id === 'anniversary') {
+                        if (y < 1970 || y > currentYear) {
+                            showError(input, errEl, "Invalid Year");
+                            return false;
+                        }
+                    }
+
+                    clearError(input, errEl);
+                    return true;
+                } else if (val.length > 0) {
+                    showError(input, errEl, "Incomplete Date");
+                    return false;
+                }
+                clearError(input, errEl);
+                return true;
+            }
+
+            // --- 2. Load Data ---
+            fetch(`${SCRIPT_URL}?action=getProfileList`)
+                .then(r => r.json())
+                .then(data => {
+                    employeeList = data;
+                    loader.style.display = 'none';
+                })
+                .catch(() => {
+                    loader.style.display = 'none';
+                    alert("Network Error. Reload page.");
+                });
+
+            // --- 3. Search & Keyboard Navigation ---
+            searchBox.addEventListener('input', function() {
+                const val = this.value.toLowerCase();
+                dropdown.innerHTML = '';
+                currentFocus = -1;
+                
+                if (!val) { dropdown.classList.remove('show'); return; }
+
+                const matches = employeeList.filter(i => i.displayName.toLowerCase().includes(val));
+                
+                if (matches.length > 0) {
+                    dropdown.classList.add('show');
+                    matches.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'result-item';
+                        div.textContent = item.displayName;
+                        
+                        if (item.isUpdated) {
+                            div.classList.add('disabled');
+                            div.textContent += " (Done)";
+                        } else {
+                            div.onclick = () => selectEmployee(item);
+                        }
+                        dropdown.appendChild(div);
+                    });
+                } else {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            searchBox.addEventListener('keydown', function(e) {
+                let items = dropdown.getElementsByClassName('result-item');
+                if (!items.length) return;
+
+                if (e.key === 'ArrowDown') {
+                    currentFocus++;
+                    addActive(items);
+                } else if (e.key === 'ArrowUp') {
+                    currentFocus--;
+                    addActive(items);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (currentFocus > -1) items[currentFocus].click();
+                }
+            });
+
+            function addActive(x) {
+                if (!x) return false;
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = x.length - 1;
+                x[currentFocus].classList.add('focused');
+                x[currentFocus].scrollIntoView({ block: 'nearest' });
+            }
+
+            function removeActive(x) {
+                for (let i = 0; i < x.length; i++) x[i].classList.remove('focused');
+            }
+
+            function selectEmployee(item) {
+                searchBox.value = item.displayName;
+                selectedExactName = item.exactName;
+                dropdown.classList.remove('show');
+                searchBox.classList.add('success');
+                
+                const dobInput = document.getElementById('dob');
+                setTimeout(() => { dobInput.focus(); }, 100);
+            }
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.form-group')) dropdown.classList.remove('show');
+            });
+
+            // --- 4. Phone Green Indicator Logic ---
+            const phoneInput = document.getElementById('phone');
+            const phoneErr = document.getElementById('phoneError');
+
+            phoneInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                
+                // Real-time Success Check
+                if (e.target.value.length === 10) {
+                    phoneInput.classList.add('success');
+                    phoneInput.classList.remove('error');
+                    phoneErr.style.display = 'none';
+                } else {
+                    phoneInput.classList.remove('success');
+                }
+            });
+
+            phoneInput.addEventListener('blur', () => {
+                if (phoneInput.value.length > 0 && phoneInput.value.length !== 10) {
+                    showError(phoneInput, phoneErr, "Must be exactly 10 digits");
+                }
+            });
+
+            // Email Validation
+            const emailInput = document.getElementById('email');
+            emailInput.addEventListener('blur', () => {
+                const err = document.getElementById('emailError');
+                if(emailInput.value && !emailInput.value.includes("@gmail.com")) {
+                    showError(emailInput, err, "Must be a valid @gmail.com address");
+                } else {
+                    clearError(emailInput, err);
+                }
+            });
+
+            function showError(input, el, msg) {
+                input.classList.add('error');
+                input.classList.remove('success');
+                if(el) { el.innerText = msg; el.style.display = 'block'; }
+            }
+
+            function clearError(input, el) {
+                input.classList.remove('error');
+                if(input.value.length > 0) input.classList.add('success');
+                if(el) el.style.display = 'none';
+            }
+
+            // --- 5. Submit ---
+            document.getElementById('profileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (!selectedExactName) { alert("Please select a name from list"); return; }
+                if (!validateDate(document.getElementById('dob'))) return;
+                if (!emailInput.value.includes("@gmail.com")) return;
+                if (phoneInput.value.length !== 10) return;
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                const formData = new FormData(e.target);
+                const payload = {
+                    formType: 'profile_update',
+                    ExactName: selectedExactName,
+                    DOB: formData.get('DOB'),
+                    Anniversary: formData.get('Anniversary') || "Not Married",
+                    Email: formData.get('Email'),
+                    Phone: "+91 " + formData.get('Phone')
+                };
+
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                    document.getElementById('successOverlay').style.display = 'flex';
+                }).catch(() => {
+                    alert("Error saving data.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Update Profile';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
