@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Self-Service | PBL Connect</title>
     
-    <!-- ✅ CHANGE 1: Path hata diya, ab same folder se uthayega -->
     <link rel="icon" href="pbl-logo.png" type="image/png"> 
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -36,10 +35,10 @@
             background-color: var(--bg-color);
             background-image: radial-gradient(#d1d8e0 1px, transparent 1px);
             background-size: 24px 24px;
-            height: 100vh; /* Fixed height */
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* No Scroll */
+            overflow: hidden; 
         }
 
         /* --- Header (Slimmer) --- */
@@ -49,7 +48,7 @@
             border-bottom: 1px solid #e0e0e0;
             display: flex;
             align-items: center;
-            height: 60px; /* Reduced height */
+            height: 60px;
             flex-shrink: 0;
         }
         .header-brand { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--primary); font-size: 1.1em; }
@@ -81,7 +80,7 @@
         .card-heading p { font-size: 0.9em; color: var(--text-light); }
 
         /* Form Styling */
-        .form-group { margin-bottom: 18px; position: relative; }
+        .form-group { margin-bottom: 15px; position: relative; } /* Compact Spacing */
         
         label {
             display: block;
@@ -96,21 +95,19 @@
 
         .input-group { position: relative; }
         
-        /* Left Icon */
         .input-group i.icon-left {
             position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
             color: var(--text-light); font-size: 1.1em; pointer-events: none; z-index: 5;
         }
 
-        /* Right Icon (Validation Check) */
         .input-group i.icon-check {
             position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            color: var(--success); font-size: 1.2em; display: none; /* Hidden by default */
+            color: var(--success); font-size: 1.2em; display: none; 
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 16px 12px 45px; /* Compact padding */
+            padding: 12px 16px 12px 45px; 
             font-size: 1em;
             color: var(--text-dark);
             border: 2px solid var(--input-border);
@@ -122,7 +119,6 @@
         .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); }
         .form-control::placeholder { color: #b2bec3; }
         
-        /* Dynamic Styles */
         .form-control.error { border-color: var(--error); background: #fffbfb; }
         
         .form-control.success { 
@@ -131,10 +127,8 @@
             color: var(--success);
             font-weight: 500;
         }
-        /* Show check icon when success class is present */
         .form-control.success ~ i.icon-check { display: block; }
 
-        /* Error Tooltip */
         .error-msg {
             font-size: 0.75em; color: var(--error); margin-top: 4px; display: none; font-weight: 500;
         }
@@ -167,9 +161,7 @@
         .app-footer {
             text-align: center; padding: 12px; font-size: 0.75em; color: var(--text-light);
             background: #fff; border-top: 1px solid #e0e0e0; flex-shrink: 0;
-            white-space: nowrap; /* Forces single line */
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .footer-link { color: var(--primary); font-weight: 600; text-decoration: none; }
 
@@ -179,14 +171,13 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .success-overlay { position: absolute; inset: 0; background: #fff; border-radius: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 50; text-align: center; }
 
-        /* Responsive Fix for Short Screens */
+        /* Responsive Fix */
         @media (max-height: 800px) {
-            .profile-card { padding: 25px 35px; }
-            .form-group { margin-bottom: 14px; }
+            .profile-card { padding: 20px 35px; }
+            .form-group { margin-bottom: 12px; }
             .form-control { padding: 10px 16px 10px 45px; }
             .card-heading { margin-bottom: 15px; }
             .card-heading h2 { font-size: 1.5em; }
-            .app-footer { font-size: 0.7em; }
         }
     </style>
 </head>
@@ -197,7 +188,6 @@
     <!-- Header -->
     <header class="app-header">
         <div class="header-brand">
-            <!-- ✅ CHANGE 2: Path hata diya, same folder -->
             <img src="pbl-logo.png" alt="PBL Logo">
             <span>Employee Self-Service</span>
         </div>
@@ -234,9 +224,19 @@
                     <div id="dobError" class="error-msg"></div>
                 </div>
 
+                <!-- NEW: Work Anniversary (DOJ) -->
+                <div class="form-group">
+                    <label>Date of Joining (Work Anniversary) <span style="color:var(--error)">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-briefcase icon-left"></i>
+                        <input type="text" id="doj" name="DOJ" class="form-control date-mask" placeholder="DD-MM-YYYY" maxlength="10">
+                    </div>
+                    <div id="dojError" class="error-msg"></div>
+                </div>
+
                 <!-- Anniversary -->
                 <div class="form-group">
-                    <label>Anniversary <span class="label-optional">(Optional)</span></label>
+                    <label>Wedding Anniversary <span class="label-optional">(Optional)</span></label>
                     <div class="input-group">
                         <i class="fas fa-heart icon-left" style="color: #ff7675;"></i>
                         <input type="text" id="anniversary" name="Anniversary" class="form-control date-mask" placeholder="DD-MM-YYYY" maxlength="10">
@@ -261,7 +261,6 @@
                         <i class="fas fa-phone-alt icon-left"></i>
                         <span class="phone-prefix">+91</span>
                         <input type="tel" id="phone" name="Phone" class="form-control" placeholder="98765 43210" maxlength="10">
-                        <!-- Green Check Icon -->
                         <i class="fas fa-check-circle icon-check"></i>
                     </div>
                     <div id="phoneError" class="error-msg">Must be exactly 10 digits</div>
@@ -273,7 +272,6 @@
 
             </form>
 
-            <!-- Success Screen -->
             <div id="successOverlay" class="success-overlay">
                 <i class="fas fa-check-circle" style="font-size: 4em; color: var(--success); margin-bottom: 20px;"></i>
                 <h2 style="margin-bottom: 10px; color: var(--text-dark);">Success!</h2>
@@ -284,7 +282,6 @@
         </div>
     </div>
 
-    <!-- Compact Footer (Single Line) -->
     <footer class="app-footer">
         © <span id="yearSpan"></span> Pan Business Lists Pvt. Ltd. &nbsp;|&nbsp; Private Portal &nbsp;|&nbsp; Developed by <span class="footer-link">IT Department</span>
     </footer>
@@ -328,7 +325,11 @@
 
             function validateDate(input) {
                 const val = input.value;
-                const errorId = input.id === 'dob' ? 'dobError' : 'annivError';
+                let errorId = "";
+                if(input.id === 'dob') errorId = 'dobError';
+                else if(input.id === 'doj') errorId = 'dojError';
+                else if(input.id === 'anniversary') errorId = 'annivError';
+
                 const errEl = document.getElementById(errorId);
                 
                 if (val.length === 10) {
@@ -341,13 +342,20 @@
                         return false;
                     }
 
+                    // Validation Rules
                     if (input.id === 'dob') {
                         if (y < 1950 || y > (currentYear - 18)) {
                             showError(input, errEl, `Invalid Year (18+ years)`);
                             return false;
                         }
                     } 
-                    else if (input.id === 'anniversary') {
+                    else if (input.id === 'doj') { // Work Anniversary
+                        if (y < 2000 || y > currentYear) {
+                            showError(input, errEl, "Invalid Joining Year");
+                            return false;
+                        }
+                    }
+                    else if (input.id === 'anniversary') { // Wedding
                         if (y < 1970 || y > currentYear) {
                             showError(input, errEl, "Invalid Year");
                             return false;
@@ -360,7 +368,19 @@
                     showError(input, errEl, "Incomplete Date");
                     return false;
                 }
-                clearError(input, errEl);
+                
+                // Allow empty for optional fields
+                if(input.id === 'anniversary' && val.length === 0) {
+                    clearError(input, errEl);
+                    return true;
+                }
+
+                // Required fields cannot be empty
+                if(val.length === 0 && (input.id === 'dob' || input.id === 'doj')) {
+                    clearError(input, errEl); // Error will be caught on submit
+                    return false;
+                }
+
                 return true;
             }
 
@@ -501,6 +521,7 @@
                 
                 if (!selectedExactName) { alert("Please select a name from list"); return; }
                 if (!validateDate(document.getElementById('dob'))) return;
+                if (!validateDate(document.getElementById('doj'))) return;
                 if (!emailInput.value.includes("@gmail.com")) return;
                 if (phoneInput.value.length !== 10) return;
 
@@ -512,6 +533,7 @@
                     formType: 'profile_update',
                     ExactName: selectedExactName,
                     DOB: formData.get('DOB'),
+                    DOJ: formData.get('DOJ'),
                     Anniversary: formData.get('Anniversary') || "Not Married",
                     Email: formData.get('Email'),
                     Phone: "+91 " + formData.get('Phone')
@@ -534,5 +556,4 @@
         });
     </script>
 </body>
-
 </html>
