@@ -41,7 +41,6 @@
             overflow: hidden; 
         }
 
-        /* --- Header (Slimmer) --- */
         .app-header {
             padding: 0 40px;
             background: rgba(255, 255, 255, 0.95);
@@ -54,14 +53,13 @@
         .header-brand { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--primary); font-size: 1.1em; }
         .header-brand img { height: 35px; }
 
-        /* --- Main Content --- */
         .main-container {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 10px;
-            overflow: hidden;
+            overflow-y: auto; 
         }
 
         .profile-card {
@@ -79,8 +77,7 @@
         .card-heading h2 { font-size: 1.8em; color: var(--text-dark); margin-bottom: 5px; letter-spacing: -0.5px; }
         .card-heading p { font-size: 0.9em; color: var(--text-light); }
 
-        /* Form Styling */
-        .form-group { margin-bottom: 15px; position: relative; } /* Compact Spacing */
+        .form-group { margin-bottom: 15px; position: relative; }
         
         label {
             display: block;
@@ -120,23 +117,13 @@
         .form-control::placeholder { color: #b2bec3; }
         
         .form-control.error { border-color: var(--error); background: #fffbfb; }
-        
-        .form-control.success { 
-            border-color: var(--success); 
-            background: #f0fffa; 
-            color: var(--success);
-            font-weight: 500;
-        }
+        .form-control.success { border-color: var(--success); background: #f0fffa; color: var(--success); font-weight: 500; }
         .form-control.success ~ i.icon-check { display: block; }
-
-        .error-msg {
-            font-size: 0.75em; color: var(--error); margin-top: 4px; display: none; font-weight: 500;
-        }
+        .error-msg { font-size: 0.75em; color: var(--error); margin-top: 4px; display: none; font-weight: 500; }
 
         input[name="Phone"] { padding-left: 80px; }
         .phone-prefix { position: absolute; left: 45px; top: 50%; transform: translateY(-50%); font-size: 1em; font-weight: 600; color: var(--text-dark); z-index: 2; }
 
-        /* Submit Button */
         .btn-submit {
             width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), #a29bfe);
             color: #fff; border: none; border-radius: 12px; font-size: 1.1em; font-weight: 600;
@@ -146,7 +133,6 @@
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(108, 92, 231, 0.35); }
         .btn-submit:disabled { background: #b2bec3; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* Dropdown */
         .dropdown-results {
             position: absolute; top: 105%; left: 0; width: 100%;
             background: #fff; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
@@ -157,7 +143,6 @@
         .result-item:hover, .result-item.focused { background: #f0f3ff; color: var(--primary); padding-left: 24px; transition: 0.1s; font-weight: 500; }
         .result-item.disabled { color: #ccc; pointer-events: none; }
 
-        /* Footer */
         .app-footer {
             text-align: center; padding: 12px; font-size: 0.75em; color: var(--text-light);
             background: #fff; border-top: 1px solid #e0e0e0; flex-shrink: 0;
@@ -166,24 +151,74 @@
         .footer-link { color: var(--primary); font-weight: 600; text-decoration: none; }
 
         /* Loader & Success */
-        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-        .spinner { width: 45px; height: 45px; border: 4px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-overlay { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.98); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .spinnerContainer { display: flex; flex-direction: column; align-items: center; }
+        .spinner { width: 56px; height: 56px; display: grid; border: 4px solid #0000; border-radius: 50%; border-right-color: var(--primary); animation: tri-spinner 1s infinite linear; }
+        .spinner::before, .spinner::after { content: ""; grid-area: 1/1; margin: 2px; border: inherit; border-radius: 50%; animation: tri-spinner 2s infinite; }
+        .spinner::after { margin: 8px; animation-duration: 3s; }
+        @keyframes tri-spinner { 100% { transform: rotate(1turn); } }
+        .loader { color: var(--text-dark); font-family: "Poppins", sans-serif; font-weight: 500; font-size: 20px; box-sizing: content-box; height: 30px; padding: 10px 10px; display: flex; border-radius: 8px; margin-top: 15px; }
+        .words { overflow: hidden; height: 100%; }
+        .word { display: block; height: 100%; padding-left: 8px; color: var(--primary); animation: cycle-words 5s infinite; font-weight: 700; }
+        @keyframes cycle-words { 10% { transform: translateY(-105%); } 25% { transform: translateY(-100%); } 35% { transform: translateY(-205%); } 50% { transform: translateY(-200%); } 60% { transform: translateY(-305%); } 75% { transform: translateY(-300%); } 85% { transform: translateY(-405%); } 100% { transform: translateY(-400%); } }
         .success-overlay { position: absolute; inset: 0; background: #fff; border-radius: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 50; text-align: center; }
-
-        /* Responsive Fix */
-        @media (max-height: 800px) {
-            .profile-card { padding: 20px 35px; }
-            .form-group { margin-bottom: 12px; }
-            .form-control { padding: 10px 16px 10px 45px; }
-            .card-heading { margin-bottom: 15px; }
-            .card-heading h2 { font-size: 1.5em; }
+        
+        /* Modal Styles (Updated) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.show { opacity: 1; }
+        .modal-card { background: #fff; width: 90%; max-width: 420px; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
+        .modal-overlay.show .modal-card { transform: scale(1); }
+        .modal-header { padding: 20px; background: linear-gradient(135deg, var(--primary), #a29bfe); color: #fff; text-align: center; }
+        .modal-header h3 { margin: 0; font-size: 1.3em; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .modal-body { padding: 20px 30px; }
+        .review-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
+        .review-item:last-child { border-bottom: none; }
+        
+        /* 🔥 Updated Review Label CSS */
+        .review-label { 
+            color: #5d6d7e; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            font-size: 0.9em; /* Size Badhaya */
+            letter-spacing: 1px; 
+            display: flex; align-items: center; gap: 6px; 
         }
+        
+        .review-val { font-weight: 600; color: var(--text-dark); font-size: 0.95em; }
+        .modal-footer { padding: 10px 30px 25px; display: flex; gap: 15px; }
+        .modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.95em; }
+        .modal-btn.cancel { background: #f1f2f6; color: var(--text-dark); }
+        .modal-btn.confirm { background: var(--primary); color: #fff; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3); }
+        .modal-btn:hover { transform: translateY(-2px); }
+
+        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #fff; padding: 12px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; z-index: 10000; opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); min-width: 300px; border: 1px solid rgba(0,0,0,0.05); }
+        .toast-container.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast-container.error { border-left: 5px solid var(--error); }
+        .toast-container.success { border-left: 5px solid var(--success); }
+        .toast-icon { font-size: 1.2em; }
+        .toast-container.error .toast-icon { color: var(--error); }
+        .toast-container.success .toast-icon { color: var(--success); }
+        .toast-message { font-size: 0.9em; font-weight: 500; color: var(--text-dark); }
     </style>
 </head>
 <body>
 
-    <div id="pageLoader" class="loader-overlay"><div class="spinner"></div></div>
+    <!-- 🔄 Modern Loader -->
+    <div id="pageLoader" class="loader-overlay">
+        <div class="spinnerContainer">
+            <div class="spinner"></div>
+            <div class="loader">
+                <p>Loading</p>
+                <div class="words">
+                    <span class="word">Profiles</span>
+                    <span class="word">Records</span>
+                    <span class="word">Details</span>
+                    <span class="word">Database</span>
+                    <span class="word">Profiles</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="app-header">
@@ -198,43 +233,42 @@
         <div class="profile-card">
             
             <div class="card-heading">
-                <h2>Update Profile</h2>
+                <h2><i class="fas fa-user-edit" style="color:var(--primary)"></i> Update Profile</h2>
                 <p>Keep your records accurate & up-to-date.</p>
             </div>
 
             <form id="profileForm" autocomplete="off">
                 
-                <!-- Name Search -->
                 <div class="form-group">
                     <label>Select Name <span style="color:var(--error)">*</span></label>
                     <div class="input-group">
                         <i class="fas fa-search icon-left"></i>
                         <input type="text" id="searchBox" class="form-control" placeholder="Type to search..." autocomplete="off">
+                        <i class="fas fa-check-circle icon-check"></i>
                         <div id="dropdown" class="dropdown-results"></div>
                     </div>
                 </div>
 
-                <!-- DOB -->
                 <div class="form-group">
                     <label>Date of Birth <span style="color:var(--error)">*</span></label>
                     <div class="input-group">
                         <i class="fas fa-birthday-cake icon-left"></i>
                         <input type="text" id="dob" name="DOB" class="form-control date-mask" placeholder="DD-MM-YYYY" maxlength="10">
+                        <i class="fas fa-check-circle icon-check"></i>
                     </div>
                     <div id="dobError" class="error-msg"></div>
                 </div>
 
-                <!-- NEW: Work Anniversary (DOJ) -->
                 <div class="form-group">
                     <label>Date of Joining (Work Anniversary) <span style="color:var(--error)">*</span></label>
                     <div class="input-group">
                         <i class="fas fa-briefcase icon-left"></i>
                         <input type="text" id="doj" name="DOJ" class="form-control date-mask" placeholder="DD-MM-YYYY" maxlength="10">
+                        <i class="fas fa-check-circle icon-check"></i>
                     </div>
                     <div id="dojError" class="error-msg"></div>
                 </div>
 
-                <!-- Anniversary -->
                 <div class="form-group">
                     <label>Wedding Anniversary <span class="label-optional">(Optional)</span></label>
                     <div class="input-group">
@@ -244,17 +278,16 @@
                     <div id="annivError" class="error-msg"></div>
                 </div>
 
-                <!-- Email -->
                 <div class="form-group">
                     <label>Personal Email <span style="color:var(--error)">*</span></label>
                     <div class="input-group">
                         <i class="fas fa-envelope icon-left"></i>
                         <input type="email" id="email" name="Email" class="form-control" placeholder="example@gmail.com">
+                        <i class="fas fa-check-circle icon-check"></i>
                     </div>
                     <div id="emailError" class="error-msg">Must be a valid @gmail.com address</div>
                 </div>
 
-                <!-- Phone -->
                 <div class="form-group">
                     <label>WhatsApp Number <span style="color:var(--error)">*</span></label>
                     <div class="input-group">
@@ -266,8 +299,8 @@
                     <div id="phoneError" class="error-msg">Must be exactly 10 digits</div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="btn-submit">
-                    Update Profile <i class="fas fa-arrow-right"></i>
+                <button type="submit" id="reviewBtn" class="btn-submit">
+                    Review & Update <i class="fas fa-arrow-right"></i>
                 </button>
 
             </form>
@@ -282,44 +315,77 @@
         </div>
     </div>
 
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fas fa-clipboard-check"></i> Confirm Details</h3>
+            </div>
+            <div class="modal-body">
+                <div class="review-item"><span class="review-label">Name</span><span class="review-val" id="revName">--</span></div>
+                <div class="review-item"><span class="review-label">Birth Date 🎂</span><span class="review-val" id="revDob">--</span></div>
+                <div class="review-item"><span class="review-label">Joining Date 💼</span><span class="review-val" id="revDoj">--</span></div>
+                <div class="review-item"><span class="review-label">Anniversary 💍</span><span class="review-val" id="revAnniv">--</span></div>
+                <div class="review-item"><span class="review-label">Email 📧</span><span class="review-val" id="revEmail">--</span></div>
+                <div class="review-item"><span class="review-label">Phone 📞</span><span class="review-val" id="revPhone">--</span></div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelBtn" class="modal-btn cancel">Edit</button>
+                <button id="finalSubmitBtn" class="modal-btn confirm">Confirm & Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer class="app-footer">
         © <span id="yearSpan"></span> Pan Business Lists Pvt. Ltd. &nbsp;|&nbsp; Private Portal &nbsp;|&nbsp; Developed by <span class="footer-link">IT Department</span>
     </footer>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast-container">
+        <div class="toast-icon"><i class="fas fa-info-circle"></i></div>
+        <div class="toast-message">Notification Message</div>
+    </div>
+
     <script>
         // 🔴 UPDATE YOUR SCRIPT URL HERE 🔴
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrOI2fLOZSvBHopBlTH7_P6axNpJQq-9rOlLQn5k3h_cbLTtxkoGXC6STeHS4Mw8XFOQ/exec"; 
+
+        function showToast(message, type = 'error') {
+            const toast = document.getElementById('toast');
+            const msgEl = toast.querySelector('.toast-message');
+            const iconEl = toast.querySelector('.toast-icon i');
+            msgEl.textContent = message;
+            toast.className = 'toast-container show'; 
+            if (type === 'error') { toast.classList.add('error'); iconEl.className = 'fas fa-exclamation-circle'; } 
+            else { toast.classList.add('success'); iconEl.className = 'fas fa-check-circle'; }
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('yearSpan').textContent = new Date().getFullYear();
             
             const searchBox = document.getElementById('searchBox');
             const dropdown = document.getElementById('dropdown');
-            const submitBtn = document.getElementById('submitBtn');
             const loader = document.getElementById('pageLoader');
+            const modal = document.getElementById('reviewModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const finalSubmitBtn = document.getElementById('finalSubmitBtn');
             
             let employeeList = [];
             let selectedExactName = "";
             let currentFocus = -1; 
+            let formDataPayload = {};
 
-            // --- 1. Smart Date Logic (Flatpickr) ---
             const dateInputs = document.querySelectorAll('.date-mask');
-            
             dateInputs.forEach(input => {
-                flatpickr(input, {
-                    dateFormat: "d-m-Y",
-                    allowInput: true,
-                    disableMobile: "true",
-                    theme: "material_blue"
-                });
-
+                flatpickr(input, { dateFormat: "d-m-Y", allowInput: true, disableMobile: "true", theme: "material_blue" });
                 input.addEventListener('input', (e) => {
                     let v = e.target.value.replace(/\D/g, '');
                     if (v.length > 2) v = v.slice(0, 2) + '-' + v.slice(2);
                     if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
                     e.target.value = v.slice(0, 10);
                 });
-
                 input.addEventListener('blur', () => validateDate(input));
             });
 
@@ -331,226 +397,150 @@
                 else if(input.id === 'anniversary') errorId = 'annivError';
 
                 const errEl = document.getElementById(errorId);
+                const currentYear = new Date().getFullYear();
                 
                 if (val.length === 10) {
                     const [d, m, y] = val.split('-').map(Number);
-                    const currentYear = new Date().getFullYear();
                     const dateObj = new Date(y, m - 1, d);
-
                     if (dateObj.getFullYear() !== y || dateObj.getMonth() + 1 !== m || dateObj.getDate() !== d) {
-                        showError(input, errEl, "Invalid Date");
-                        return false;
+                        showError(input, errEl, "Invalid Calendar Date"); return false;
                     }
-
-                    // Validation Rules
-                    if (input.id === 'dob') {
-                        if (y < 1950 || y > (currentYear - 18)) {
-                            showError(input, errEl, `Invalid Year (18+ years)`);
-                            return false;
-                        }
+                    if (input.id === 'dob' && (y < 1950 || y > (currentYear - 18))) {
+                        showError(input, errEl, `Invalid Age (18+)`); return false;
                     } 
-                    else if (input.id === 'doj') { // Work Anniversary
-                        if (y < 2000 || y > currentYear) {
-                            showError(input, errEl, "Invalid Joining Year");
-                            return false;
-                        }
+                    if (input.id === 'doj' && (y < 2000 || y > currentYear)) {
+                        showError(input, errEl, "Invalid Joining Year"); return false;
                     }
-                    else if (input.id === 'anniversary') { // Wedding
-                        if (y < 1970 || y > currentYear) {
-                            showError(input, errEl, "Invalid Year");
-                            return false;
-                        }
+                    if (input.id === 'anniversary' && (y < 1970 || y > currentYear)) {
+                        showError(input, errEl, "Invalid Year"); return false;
                     }
-
-                    clearError(input, errEl);
-                    return true;
+                    clearError(input, errEl); return true;
                 } else if (val.length > 0) {
-                    showError(input, errEl, "Incomplete Date");
-                    return false;
+                    showError(input, errEl, "Incomplete Date"); return false;
                 }
                 
-                // Allow empty for optional fields
-                if(input.id === 'anniversary' && val.length === 0) {
-                    clearError(input, errEl);
-                    return true;
-                }
-
-                // Required fields cannot be empty
-                if(val.length === 0 && (input.id === 'dob' || input.id === 'doj')) {
-                    clearError(input, errEl); // Error will be caught on submit
-                    return false;
-                }
-
+                if(input.id === 'anniversary' && val.length === 0) { clearError(input, errEl); return true; }
+                if(val.length === 0) { return false; } 
                 return true;
             }
 
-            // --- 2. Load Data ---
             fetch(`${SCRIPT_URL}?action=getProfileList`)
                 .then(r => r.json())
-                .then(data => {
-                    employeeList = data;
-                    loader.style.display = 'none';
-                })
-                .catch(() => {
-                    loader.style.display = 'none';
-                    alert("Network Error. Reload page.");
-                });
+                .then(data => { employeeList = data; loader.style.display = 'none'; })
+                .catch(() => { loader.style.display = 'none'; showToast("Network Error. Reload page.", "error"); });
 
-            // --- 3. Search & Keyboard Navigation ---
             searchBox.addEventListener('input', function() {
                 const val = this.value.toLowerCase();
                 dropdown.innerHTML = '';
                 currentFocus = -1;
-                
                 if (!val) { dropdown.classList.remove('show'); return; }
-
                 const matches = employeeList.filter(i => i.displayName.toLowerCase().includes(val));
-                
                 if (matches.length > 0) {
                     dropdown.classList.add('show');
                     matches.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = 'result-item';
-                        div.textContent = item.displayName;
-                        
-                        if (item.isUpdated) {
-                            div.classList.add('disabled');
-                            div.textContent += " (Done)";
-                        } else {
-                            div.onclick = () => selectEmployee(item);
-                        }
+                        const div = document.createElement('div'); div.className = 'result-item'; div.textContent = item.displayName;
+                        if (item.isUpdated) { div.classList.add('disabled'); div.textContent += " (Done)"; } 
+                        else { div.onclick = () => selectEmployee(item); }
                         dropdown.appendChild(div);
                     });
-                } else {
-                    dropdown.classList.remove('show');
-                }
+                } else { dropdown.classList.remove('show'); }
             });
 
             searchBox.addEventListener('keydown', function(e) {
                 let items = dropdown.getElementsByClassName('result-item');
                 if (!items.length) return;
-
-                if (e.key === 'ArrowDown') {
-                    currentFocus++;
-                    addActive(items);
-                } else if (e.key === 'ArrowUp') {
-                    currentFocus--;
-                    addActive(items);
-                } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (currentFocus > -1) items[currentFocus].click();
-                }
+                if (e.key === 'ArrowDown') { currentFocus++; addActive(items); }
+                else if (e.key === 'ArrowUp') { currentFocus--; addActive(items); }
+                else if (e.key === 'Enter') { e.preventDefault(); if (currentFocus > -1) items[currentFocus].click(); }
             });
 
-            function addActive(x) {
-                if (!x) return false;
-                removeActive(x);
-                if (currentFocus >= x.length) currentFocus = 0;
-                if (currentFocus < 0) currentFocus = x.length - 1;
-                x[currentFocus].classList.add('focused');
-                x[currentFocus].scrollIntoView({ block: 'nearest' });
-            }
-
-            function removeActive(x) {
-                for (let i = 0; i < x.length; i++) x[i].classList.remove('focused');
-            }
+            function addActive(x) { if (!x) return false; removeActive(x); if (currentFocus >= x.length) currentFocus = 0; if (currentFocus < 0) currentFocus = x.length - 1; x[currentFocus].classList.add('focused'); x[currentFocus].scrollIntoView({ block: 'nearest' }); }
+            function removeActive(x) { for (let i = 0; i < x.length; i++) x[i].classList.remove('focused'); }
 
             function selectEmployee(item) {
-                searchBox.value = item.displayName;
-                selectedExactName = item.exactName;
+                searchBox.value = item.displayName; selectedExactName = item.exactName;
                 dropdown.classList.remove('show');
-                searchBox.classList.add('success');
-                
-                const dobInput = document.getElementById('dob');
-                setTimeout(() => { dobInput.focus(); }, 100);
+                searchBox.classList.add('success'); searchBox.classList.remove('error');
+                setTimeout(() => { document.getElementById('dob').focus(); }, 100);
             }
 
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.form-group')) dropdown.classList.remove('show');
-            });
+            document.addEventListener('click', (e) => { if (!e.target.closest('.form-group')) dropdown.classList.remove('show'); });
 
-            // --- 4. Phone Green Indicator Logic ---
+            const emailInput = document.getElementById('email');
             const phoneInput = document.getElementById('phone');
-            const phoneErr = document.getElementById('phoneError');
 
             phoneInput.addEventListener('input', (e) => {
                 e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
-                
-                // Real-time Success Check
                 if (e.target.value.length === 10) {
-                    phoneInput.classList.add('success');
-                    phoneInput.classList.remove('error');
-                    phoneErr.style.display = 'none';
-                } else {
-                    phoneInput.classList.remove('success');
-                }
+                    phoneInput.classList.add('success'); phoneInput.classList.remove('error');
+                    document.getElementById('phoneError').style.display = 'none';
+                } else { phoneInput.classList.remove('success'); }
             });
 
-            phoneInput.addEventListener('blur', () => {
-                if (phoneInput.value.length > 0 && phoneInput.value.length !== 10) {
-                    showError(phoneInput, phoneErr, "Must be exactly 10 digits");
-                }
+            phoneInput.addEventListener('blur', () => { if (phoneInput.value.length > 0 && phoneInput.value.length !== 10) showError(phoneInput, document.getElementById('phoneError'), "Must be 10 digits"); });
+            emailInput.addEventListener('blur', () => { if(emailInput.value && !emailInput.value.includes("@gmail.com")) showError(emailInput, document.getElementById('emailError'), "Must be valid @gmail.com"); else clearError(emailInput, document.getElementById('emailError')); });
+            emailInput.addEventListener('input', () => {
+                 if (emailInput.value.includes("@gmail.com") && emailInput.value.length > 10) {
+                    clearError(emailInput, document.getElementById('emailError'));
+                 } else { emailInput.classList.remove('success'); }
             });
 
-            // Email Validation
-            const emailInput = document.getElementById('email');
-            emailInput.addEventListener('blur', () => {
-                const err = document.getElementById('emailError');
-                if(emailInput.value && !emailInput.value.includes("@gmail.com")) {
-                    showError(emailInput, err, "Must be a valid @gmail.com address");
-                } else {
-                    clearError(emailInput, err);
-                }
-            });
-
-            function showError(input, el, msg) {
-                input.classList.add('error');
-                input.classList.remove('success');
-                if(el) { el.innerText = msg; el.style.display = 'block'; }
-            }
-
+            function showError(input, el, msg) { input.classList.add('error'); input.classList.remove('success'); if(el) { el.innerText = msg; el.style.display = 'block'; } }
+            
             function clearError(input, el) {
                 input.classList.remove('error');
-                if(input.value.length > 0) input.classList.add('success');
+                if(input.value.length > 0) { input.classList.add('success'); } else { input.classList.remove('success'); }
                 if(el) el.style.display = 'none';
             }
 
-            // --- 5. Submit ---
             document.getElementById('profileForm').addEventListener('submit', (e) => {
                 e.preventDefault();
-                
-                if (!selectedExactName) { alert("Please select a name from list"); return; }
-                if (!validateDate(document.getElementById('dob'))) return;
-                if (!validateDate(document.getElementById('doj'))) return;
+                if (!selectedExactName) { showToast("Please select Name from list!", "error"); return; }
+                const dobVal = document.getElementById('dob');
+                const dojVal = document.getElementById('doj');
+                if(!validateDate(dobVal) || dobVal.value.length === 0) { showError(dobVal, document.getElementById('dobError'), "Required"); return; }
+                if(!validateDate(dojVal) || dojVal.value.length === 0) { showError(dojVal, document.getElementById('dojError'), "Required"); return; }
                 if (!emailInput.value.includes("@gmail.com")) return;
                 if (phoneInput.value.length !== 10) return;
 
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                const form = new FormData(e.target);
+                document.getElementById('revName').innerText = selectedExactName;
+                document.getElementById('revDob').innerText = form.get('DOB');
+                document.getElementById('revDoj').innerText = form.get('DOJ');
+                document.getElementById('revAnniv').innerText = form.get('Anniversary') || "-";
+                document.getElementById('revEmail').innerText = form.get('Email');
+                document.getElementById('revPhone').innerText = "+91 " + form.get('Phone');
 
-                const formData = new FormData(e.target);
-                const payload = {
+                formDataPayload = {
                     formType: 'profile_update',
                     ExactName: selectedExactName,
-                    DOB: formData.get('DOB'),
-                    DOJ: formData.get('DOJ'),
-                    Anniversary: formData.get('Anniversary') || "Not Married",
-                    Email: formData.get('Email'),
-                    Phone: "+91 " + formData.get('Phone')
+                    DOB: form.get('DOB'),
+                    DOJ: form.get('DOJ'),
+                    Anniversary: form.get('Anniversary') || "Not Married",
+                    Email: form.get('Email'),
+                    Phone: "+91 " + form.get('Phone')
                 };
 
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+            });
+
+            cancelBtn.addEventListener('click', () => { modal.classList.remove('show'); setTimeout(() => modal.style.display = 'none', 300); });
+
+            finalSubmitBtn.addEventListener('click', () => {
+                finalSubmitBtn.innerHTML = "Submitting..."; finalSubmitBtn.disabled = true; cancelBtn.disabled = true;
                 fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(formDataPayload)
                 }).then(() => {
+                    modal.style.display = 'none';
                     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
                     document.getElementById('successOverlay').style.display = 'flex';
                 }).catch(() => {
-                    alert("Error saving data.");
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Update Profile';
+                    showToast("Submission Failed. Check Internet.", "error");
+                    finalSubmitBtn.innerHTML = "Confirm & Submit"; finalSubmitBtn.disabled = false; cancelBtn.disabled = false;
                 });
             });
         });
