@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Self-Service | PBL Connect</title>
     
-    <link rel="icon" href="pbl-logo.png" type="image/png"> 
+    <link rel="icon" href="assets/images/pbl-logo.png" type="image/png"> 
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -133,6 +133,19 @@
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(108, 92, 231, 0.35); }
         .btn-submit:disabled { background: #b2bec3; cursor: not-allowed; transform: none; box-shadow: none; }
 
+        /* Secondary Action Button (Outline) */
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: #f0f3ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.1);
+        }
+
         .dropdown-results {
             position: absolute; top: 105%; left: 0; width: 100%;
             background: #fff; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
@@ -161,9 +174,31 @@
         .words { overflow: hidden; height: 100%; }
         .word { display: block; height: 100%; padding-left: 8px; color: var(--primary); animation: cycle-words 5s infinite; font-weight: 700; }
         @keyframes cycle-words { 10% { transform: translateY(-105%); } 25% { transform: translateY(-100%); } 35% { transform: translateY(-205%); } 50% { transform: translateY(-200%); } 60% { transform: translateY(-305%); } 75% { transform: translateY(-300%); } 85% { transform: translateY(-405%); } 100% { transform: translateY(-400%); } }
-        .success-overlay { position: absolute; inset: 0; background: #fff; border-radius: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 50; text-align: center; }
         
-        /* Modal Styles (Updated) */
+        /* Updated Success Overlay */
+        .success-overlay { position: absolute; inset: 0; background: #fff; border-radius: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 50; text-align: center; overflow-y: auto; padding: 20px; }
+        
+        /* Summary Box inside Success Overlay */
+        .summary-box {
+            display: none; /* Initially hidden */
+            margin-top: 25px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+            border: 1px solid #eee;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .summary-row { display: flex; justify-content: space-between; font-size: 0.9em; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
+        .summary-row:last-child { border-bottom: none; margin-bottom: 0; }
+        .sum-label { color: var(--text-light); font-weight: 500; }
+        .sum-val { color: var(--text-dark); font-weight: 600; text-align: right; }
+
+        /* Modal Styles */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.show { opacity: 1; }
         .modal-card { background: #fff; width: 90%; max-width: 420px; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
@@ -173,17 +208,7 @@
         .modal-body { padding: 20px 30px; }
         .review-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
         .review-item:last-child { border-bottom: none; }
-        
-        /* 🔥 Updated Review Label CSS */
-        .review-label { 
-            color: #5d6d7e; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            font-size: 0.9em; /* Size Badhaya */
-            letter-spacing: 1px; 
-            display: flex; align-items: center; gap: 6px; 
-        }
-        
+        .review-label { color: #5d6d7e; font-weight: 700; text-transform: uppercase; font-size: 0.9em; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
         .review-val { font-weight: 600; color: var(--text-dark); font-size: 0.95em; }
         .modal-footer { padding: 10px 30px 25px; display: flex; gap: 15px; }
         .modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.95em; }
@@ -203,7 +228,7 @@
 </head>
 <body>
 
-    <!-- 🔄 Modern Loader -->
+    <!-- Modern Loader -->
     <div id="pageLoader" class="loader-overlay">
         <div class="spinnerContainer">
             <div class="spinner"></div>
@@ -223,7 +248,7 @@
     <!-- Header -->
     <header class="app-header">
         <div class="header-brand">
-            <img src="pbl-logo.png" alt="PBL Logo">
+            <img src="assets/images/pbl-logo.png" alt="PBL Logo">
             <span>Employee Self-Service</span>
         </div>
     </header>
@@ -305,11 +330,23 @@
 
             </form>
 
+            <!-- Success Overlay (Redesigned) -->
             <div id="successOverlay" class="success-overlay">
                 <i class="fas fa-check-circle" style="font-size: 4em; color: var(--success); margin-bottom: 20px;"></i>
-                <h2 style="margin-bottom: 10px; color: var(--text-dark);">Success!</h2>
-                <p style="color: var(--text-light); margin-bottom: 25px;">Your profile has been updated.</p>
-                <button onclick="location.reload()" class="btn-submit" style="width: auto; padding: 12px 35px; margin: 0;">Close</button>
+                <h2 style="margin-bottom: 10px; color: var(--text-dark);">Profile Updated!</h2>
+                <p style="color: var(--text-light); margin-bottom: 25px;">The details have been saved successfully.</p>
+
+                <!-- New Action Buttons -->
+                <div class="success-actions" style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; width: 100%;">
+                    <button id="btnNewEntry" class="btn-submit" style="width: auto; padding: 12px 25px; margin: 0;">Update Another</button>
+                    <button id="btnViewLast" class="btn-submit btn-outline" style="width: auto; padding: 12px 25px; margin: 0;">View Submitted Details</button>
+                </div>
+
+                <!-- Hidden Summary Container -->
+                <div id="submittedSummary" class="summary-box">
+                    <h4 style="margin-bottom:10px; border-bottom:2px solid #ddd; padding-bottom:5px; color:var(--primary); font-size:1.1em;">Submission Summary</h4>
+                    <!-- Content injected via JS -->
+                </div>
             </div>
 
         </div>
@@ -349,7 +386,7 @@
 
     <script>
         // 🔴 UPDATE YOUR SCRIPT URL HERE 🔴
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrOI2fLOZSvBHopBlTH7_P6axNpJQq-9rOlLQn5k3h_cbLTtxkoGXC6STeHS4Mw8XFOQ/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzw_Lt9-dT2Vf7APYlWB-gOHCoIgOD8ej1OuG6OfFE1IaOF-LUq-ozB5JWXfRLfFLTe/exec"; 
 
         function showToast(message, type = 'error') {
             const toast = document.getElementById('toast');
@@ -457,12 +494,16 @@
             function addActive(x) { if (!x) return false; removeActive(x); if (currentFocus >= x.length) currentFocus = 0; if (currentFocus < 0) currentFocus = x.length - 1; x[currentFocus].classList.add('focused'); x[currentFocus].scrollIntoView({ block: 'nearest' }); }
             function removeActive(x) { for (let i = 0; i < x.length; i++) x[i].classList.remove('focused'); }
 
-            function selectEmployee(item) {
-                searchBox.value = item.displayName; selectedExactName = item.exactName;
-                dropdown.classList.remove('show');
-                searchBox.classList.add('success'); searchBox.classList.remove('error');
-                setTimeout(() => { document.getElementById('dob').focus(); }, 100);
-            }
+            let selectedPFCode = ""; // Global variable add karein top pe
+
+			function selectEmployee(item) {
+				searchBox.value = item.displayName;
+				selectedExactName = item.exactName;
+				selectedPFCode = item.pfCode; // ✅ PF Code store karein
+				dropdown.classList.remove('show');
+				searchBox.classList.add('success'); searchBox.classList.remove('error');
+				setTimeout(() => { document.getElementById('dob').focus(); }, 100);
+			}
 
             document.addEventListener('click', (e) => { if (!e.target.closest('.form-group')) dropdown.classList.remove('show'); });
 
@@ -512,14 +553,15 @@
                 document.getElementById('revPhone').innerText = "+91 " + form.get('Phone');
 
                 formDataPayload = {
-                    formType: 'profile_update',
-                    ExactName: selectedExactName,
-                    DOB: form.get('DOB'),
-                    DOJ: form.get('DOJ'),
-                    Anniversary: form.get('Anniversary') || "Not Married",
-                    Email: form.get('Email'),
-                    Phone: "+91 " + form.get('Phone')
-                };
+				formType: 'profile_update',
+				ExactName: selectedExactName,
+				PFCode: selectedPFCode, // ✅ PF Code bhejna zaroori hai
+				DOB: form.get('DOB'),
+				DOJ: form.get('DOJ'),
+				Anniversary: form.get('Anniversary') || "Not Married",
+				Email: form.get('Email'),
+				Phone: "+91 " + form.get('Phone')
+			};
 
                 modal.style.display = 'flex';
                 setTimeout(() => modal.classList.add('show'), 10);
@@ -537,12 +579,46 @@
                 }).then(() => {
                     modal.style.display = 'none';
                     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                    document.getElementById('successOverlay').style.display = 'flex';
+                    
+                    // Show New Success Overlay
+                    const successOverlay = document.getElementById('successOverlay');
+                    successOverlay.style.display = 'flex';
+
+                    // Update Summary Box Content
+                    const sumBox = document.getElementById('submittedSummary');
+                    sumBox.innerHTML = `
+                        <h4 style="margin-bottom:10px; border-bottom:2px solid #e0e0e0; padding-bottom:5px; color:var(--primary); font-size:1.1em;">Submission Summary</h4>
+                        <div class="summary-row"><span class="sum-label">Name</span><span class="sum-val">${formDataPayload.ExactName}</span></div>
+                        <div class="summary-row"><span class="sum-label">DOB</span><span class="sum-val">${formDataPayload.DOB}</span></div>
+                        <div class="summary-row"><span class="sum-label">Joining Date</span><span class="sum-val">${formDataPayload.DOJ}</span></div>
+                        <div class="summary-row"><span class="sum-label">Anniversary</span><span class="sum-val">${formDataPayload.Anniversary}</span></div>
+                        <div class="summary-row"><span class="sum-label">Email</span><span class="sum-val">${formDataPayload.Email}</span></div>
+                        <div class="summary-row"><span class="sum-label">Phone</span><span class="sum-val">${formDataPayload.Phone}</span></div>
+                    `;
+
                 }).catch(() => {
                     showToast("Submission Failed. Check Internet.", "error");
                     finalSubmitBtn.innerHTML = "Confirm & Submit"; finalSubmitBtn.disabled = false; cancelBtn.disabled = false;
                 });
             });
+
+            // --- Button Logic for Success Overlay ---
+            document.getElementById('btnNewEntry').onclick = () => location.reload();
+            
+            document.getElementById('btnViewLast').onclick = () => {
+                const sumBox = document.getElementById('submittedSummary');
+                const btn = document.getElementById('btnViewLast');
+                
+                if (getComputedStyle(sumBox).display === 'none') {
+                    sumBox.style.display = 'block';
+                    btn.innerText = "Hide Submitted Details";
+                    // Scroll to bottom to show summary if needed
+                    sumBox.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    sumBox.style.display = 'none';
+                    btn.innerText = "View Submitted Details";
+                }
+            };
         });
     </script>
 </body>
