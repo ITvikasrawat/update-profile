@@ -336,8 +336,8 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzw_Lt9-dT2Vf7APYlWB-gOHCoIgOD8ej1OuG6OfFE1IaOF-LUq-ozB5JWXfRLfFLTe/exec"; 
 
-        function showToast(message, type = 'error') {
-            alert(message); // Kept simple for now
+        function showToast(message) {
+            alert(message);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -354,8 +354,40 @@
             let employeeList = [];
             let selectedExactName = "";
             let selectedPFCode = "";
-            let currentFocus = -1; 
             let formDataPayload = {};
+
+            // ⚡ CACHE-FIRST STRATEGY START ⚡
+            const CACHE_KEY = 'pbl_profile_list';
+
+            // 1. Load from LocalStorage Immediately
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            if (cachedData) {
+                try {
+                    employeeList = JSON.parse(cachedData);
+                    loader.style.display = 'none'; // Unlock UI immediately
+                    console.log("Loaded from cache");
+                } catch (e) {
+                    console.error("Cache corrupted");
+                }
+            }
+
+            // 2. Background Sync
+            fetch(`${SCRIPT_URL}?action=getProfileList`)
+                .then(r => r.json())
+                .then(data => {
+                    employeeList = data;
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                    loader.style.display = 'none'; // Ensure loader is gone
+                    console.log("Background sync complete");
+                })
+                .catch(() => {
+                    // Only show error if we have NO data at all
+                    if(employeeList.length === 0) {
+                        loader.style.display = 'none';
+                        showToast("Network Error - Cannot Load List");
+                    }
+                });
+            // ⚡ CACHE-FIRST STRATEGY END ⚡
 
             // Date Pickers
             const dateInputs = document.querySelectorAll('.date-mask');
@@ -390,15 +422,9 @@
                 return true;
             }
 
-            fetch(`${SCRIPT_URL}?action=getProfileList`)
-                .then(r => r.json())
-                .then(data => { employeeList = data; loader.style.display = 'none'; })
-                .catch(() => { loader.style.display = 'none'; showToast("Network Error"); });
-
             searchBox.addEventListener('input', function() {
                 const val = this.value.toLowerCase();
                 dropdown.innerHTML = '';
-                currentFocus = -1;
                 if (!val) { dropdown.classList.remove('show'); return; }
                 const matches = employeeList.filter(i => i.displayName.toLowerCase().includes(val));
                 if (matches.length > 0) {
