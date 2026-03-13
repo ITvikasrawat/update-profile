@@ -182,6 +182,174 @@
         .error-msg { color: #ef4444; font-size: 0.75rem; margin-top: 4px; font-weight: 600; display: none; animation: shake 0.3s; }
         .input-box.error { border-color: #ef4444; background: #fef2f2; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+		
+		/* ✨ Custom Animated Radio Buttons ✨ */
+        .radio-inputs {
+          position: relative;
+          display: flex;
+          flex-wrap: wrap;
+          border-radius: 1rem;
+          background: #f8fafc; /* Changed gradient to match your existing form background */
+          box-sizing: border-box;
+          box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05); /* Softer shadow */
+          padding: 0.5rem;
+          width: 100%; /* Fixed the width issue */
+          font-size: 14px;
+          gap: 0.5rem;
+          border: 1px solid #e2e8f0;
+        }
+
+        .radio-inputs .radio {
+          flex: 1 1 auto;
+          text-align: center;
+          position: relative;
+        }
+
+        .radio-inputs .radio input {
+          display: none;
+        }
+
+        .radio-inputs .radio .name {
+          display: flex;
+          cursor: pointer;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.7rem;
+          border: none;
+          padding: 0.8rem 0;
+          color: #64748b;
+          font-weight: 600;
+          background: transparent;
+          transition: all 0.2s ease;
+          overflow: hidden;
+        }
+
+        .radio-inputs .radio input:checked + .name {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed); /* Matched your submit button color */
+          color: white;
+          font-weight: 700;
+          box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+          transform: translateY(-2px);
+        }
+
+        /* Hover effect */
+        .radio-inputs .radio:hover .name {
+          background: white;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .radio-inputs .radio:hover input:checked + .name {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        /* Animation */
+        .radio-inputs .radio input:checked + .name {
+          animation: select 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Particles */
+        .radio-inputs .radio .name::before,
+        .radio-inputs .radio .name::after {
+          content: "";
+          position: absolute;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        .radio-inputs .radio input:checked + .name::before,
+        .radio-inputs .radio input:checked + .name::after {
+          animation: particles 0.8s ease-out forwards;
+        }
+
+        .radio-inputs .radio .name::before {
+          background: #818cf8;
+          box-shadow: 0 0 6px #818cf8;
+          top: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .radio-inputs .radio .name::after {
+          background: #c7d2fe;
+          box-shadow: 0 0 8px #c7d2fe;
+          bottom: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        /* Sparkles */
+        .radio-inputs .radio .name::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(99, 102, 241, 0.3) 0%, transparent 50%);
+          opacity: 0;
+          transition: opacity 0.3s;
+        }
+
+        .radio-inputs .radio input:checked + .name::after {
+          opacity: 1;
+          animation: sparkle-bg 1s ease-out forwards;
+        }
+
+        /* Multiple particles */
+        .radio-inputs .radio input:checked + .name { overflow: visible; }
+
+        .radio-inputs .radio input:checked + .name::before {
+          box-shadow: 0 0 6px #818cf8, 10px -10px 0 #818cf8, -10px -10px 0 #818cf8;
+          animation: multi-particles-top 0.8s ease-out forwards;
+        }
+
+        .radio-inputs .radio input:checked + .name::after {
+          box-shadow: 0 0 8px #c7d2fe, 10px 10px 0 #c7d2fe, -10px 10px 0 #c7d2fe;
+          animation: multi-particles-bottom 0.8s ease-out forwards;
+        }
+
+        @keyframes select {
+          0% { transform: scale(0.95) translateY(0); }
+          50% { transform: scale(1.02) translateY(-3px); }
+          100% { transform: scale(1) translateY(-2px); }
+        }
+
+        @keyframes multi-particles-top {
+          0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+          40% { opacity: 0.8; }
+          100% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0); box-shadow: 0 0 6px transparent, 20px -20px 0 transparent, -20px -20px 0 transparent; }
+        }
+
+        @keyframes multi-particles-bottom {
+          0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+          40% { opacity: 0.8; }
+          100% { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0); box-shadow: 0 0 8px transparent, 20px 20px 0 transparent, -20px 20px 0 transparent; }
+        }
+
+        @keyframes sparkle-bg {
+          0% { opacity: 0; transform: scale(0.2); }
+          50% { opacity: 1; }
+          100% { opacity: 0; transform: scale(2); }
+        }
+
+        /* Ripple effect */
+        .radio-inputs .radio .name::before {
+          content: ""; position: absolute; inset: 0; border-radius: inherit;
+          background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 255, 255, 0.5) 0%, transparent 50%);
+          opacity: 0; transition: opacity 0.3s;
+        }
+
+        .radio-inputs .radio input:checked + .name::before {
+          animation: ripple 0.8s ease-out;
+        }
+
+        @keyframes ripple {
+          0% { opacity: 1; transform: scale(0.2); }
+          50% { opacity: 0.5; }
+          100% { opacity: 0; transform: scale(2.5); }
+        }
+		
     </style>
 </head>
 <body>
@@ -229,18 +397,18 @@
 
         <form id="profileForm" autocomplete="off">
             
-            <!-- 🔴 Location Selector UI -->
-            <div class="mb-5 animate-fade-up">
-                <label class="label-text">Branch Location <span class="text-red-500">*</span></label>
-                <div class="flex gap-6 mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="BranchLocation" value="dehradun" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" checked>
-                        <span class="text-sm font-bold text-slate-700">Dehradun</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="BranchLocation" value="noida" class="w-4 h-4 text-pink-500 focus:ring-pink-500">
-                        <span class="text-sm font-bold text-slate-700">Noida</span>
-                    </label>
+            <!-- 🔴 Naya Animated Location Selector UI -->
+            <div class="mb-6 animate-fade-up">
+                <label class="label-text flex mb-2 block">Branch Location <span class="text-red-500 ml-1">*</span></label>
+                <div class="radio-inputs w-full">
+                  <label class="radio">
+                    <input type="radio" name="BranchLocation" value="dehradun" checked>
+                    <span class="name">Dehradun</span>
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="BranchLocation" value="noida">
+                    <span class="name">Noida</span>
+                  </label>
                 </div>
             </div>
 
@@ -362,7 +530,11 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('yearSpan').textContent = new Date().getFullYear();
-            
+            // 🔴 Naya Logic: Safe Vibration Helper (iPhone crash prevent karne ke liye)
+            const triggerVibe = (pattern) => {
+                if (navigator.vibrate) navigator.vibrate(pattern);
+            };
+			
             const searchBox = document.getElementById('searchBox');
             const dropdown = document.getElementById('dropdown');
             const loader = document.getElementById('pageLoader');
@@ -446,6 +618,7 @@
             const branchRadios = document.querySelectorAll('input[name="BranchLocation"]');
             branchRadios.forEach(radio => {
                 radio.addEventListener('change', () => {
+				triggerVibe(15); // 🔴 Subtle tap on branch change
                     searchBox.value = '';
                     selectedExactName = '';
                     selectedPFCode = '';
@@ -480,6 +653,7 @@
             });
 
             function selectEmployee(item) {
+			triggerVibe(15); // 🔴 Subtle tap on name selection
                 searchBox.value = item.displayName;
                 selectedExactName = item.exactName;
                 selectedPFCode = item.pfCode; 
@@ -502,6 +676,7 @@
             });
 
             function showError(input, el, msg) { 
+			 triggerVibe([50, 50, 50]); // 🔴 Double error buzz
                 input.classList.add('error'); 
                 if(el) { el.innerText = msg; el.style.display = 'block'; } 
             }
@@ -564,6 +739,7 @@
                     body: JSON.stringify(formDataPayload)
                 }).then(() => {
                     modal.style.display = 'none';
+                    triggerVibe([100, 50, 100]); // 🔴 Success pattern vibration
                     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
                     document.getElementById('successOverlay').style.display = 'flex';
                 }).catch(() => {
